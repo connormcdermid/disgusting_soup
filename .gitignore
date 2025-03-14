@@ -1,0 +1,6 @@
+*.idea
+venv
+venv/*
+venv/**/*
+.idea
+
