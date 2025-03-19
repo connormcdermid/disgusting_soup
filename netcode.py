@@ -2,17 +2,31 @@ import requests
 from bs4 import BeautifulSoup as BS
 
 def trim(xml: str) -> str:
+    """Trim the response code from the SRS to remove extraneous request details."""
     tmp = BS(xml, "lxml-xml") # parse with XML parser
     rtag = tmp.Results
     return str(rtag.contents)
 
 def filewriter(txt: str) -> None:
+    """Write a string to a file."""
     with open("response.xml", "w") as f:
         f.write(txt)
     return
 
 
+
 def get_course_code(dept: str) -> str:
+    """
+    Get the SRS-compliant course area code given a department or course area.
+
+    The VIU Student Record System (SRS) takes as part of a POST request for a timetable
+    the course area. Examples given on the SRS are "Accounting", "Biology", etc.
+    This function will accept those, as well as their abbreviated area codes ("ACCT", "BIOL", etc)
+    and return the SRS internal course area code, which is an entirely arbitrarily
+    assigned 4-character alphanumeric string.
+    :param dept: Department or course area
+    :return: SRS internal course area code
+    """
     match dept:
         case "All Degree/Diploma" | "ALL": return "0007"
         case "Courses with Free Seats" | "FREE": return "0003"
@@ -98,6 +112,17 @@ def get_course_code(dept: str) -> str:
 
 
 def makeRequest(dept: str, session: str = "S2025") -> str:
+    """
+    Send a POST request for a timetable to the SRS
+
+    The Student Record System (SRS) accepts POST requests to
+    https://isapp.viu.ca/XMLRequest/xmlrequest to generate a timetable for courses given
+    specific parameters. The only parameters configurable here are the course area
+    and the term.
+    :param dept: Course area or department
+    :param session: Term
+    :return: Response from the SRS, as plaintext XML
+    """
     course_code = get_course_code(dept)
     url = "https://isapp.viu.ca/XMLRequest/xmlrequest"
     headers = {
@@ -142,6 +167,17 @@ def makeRequest(dept: str, session: str = "S2025") -> str:
 
 
 def get_data_as_file(dept: str, session: str = "S2025") -> None:
+    """
+    Get timetable data written to a file.
+
+    Write timetable data to a file named "response.xml" to be used by later programs.
+    Please pass this function: a course area, as a three- or four-letter department code,
+    and the term you wish to fetch, as a string in the format S<year> or F<year>,
+    defaulting to S2025.
+    :param dept: Department code or name
+    :param session: Term code
+    :return: None -- data outputted to response.xml in working directory.
+    """
     xml = makeRequest(dept, session)
     trimmed = trim(xml)
     filewriter(trimmed)
