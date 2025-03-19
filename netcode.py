@@ -1,4 +1,16 @@
 import requests
+from bs4 import BeautifulSoup as BS
+
+def trim(xml: str) -> str:
+    tmp = BS(xml, "lxml-xml") # parse with XML parser
+    rtag = tmp.Results
+    return str(rtag.contents)
+
+def filewriter(txt: str) -> None:
+    with open("response.xml", "w") as f:
+        f.write(txt)
+    return
+
 
 def get_course_code(dept: str) -> str:
     match dept:
@@ -127,6 +139,13 @@ def makeRequest(dept: str, session: str = "S2025") -> str:
                    "</Request>"}
     r = requests.post(url, headers=headers, data=payload)
     return r.text
+
+
+def get_data_as_file(dept: str, session: str = "S2025") -> None:
+    xml = makeRequest(dept, session)
+    trimmed = trim(xml)
+    filewriter(trimmed)
+    return
 
 if __name__ == '__main__':
     print(makeRequest("CSCI"))
