@@ -3,4 +3,5 @@ venv
 venv/*
 venv/**/*
 .idea
+*.xml
 
