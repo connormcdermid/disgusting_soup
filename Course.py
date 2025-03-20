@@ -13,8 +13,7 @@ class Course:
     def get_times(self, section: BS):
         for loc in section.find_all('Location'):
             for mtg in loc.Meetings:
-                print(mtg)
-                days = (lambda x: x.split())(str(mtg.DaysOfWeek.contents))
+                days = str(mtg.DaysOfWeek.string).split()
                 start_time = str(mtg.StartTime.string)
                 end_time = str(mtg.EndTime.string)
                 for day in days:
