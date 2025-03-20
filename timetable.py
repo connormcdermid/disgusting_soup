@@ -3,20 +3,22 @@
 
 from bs4 import BeautifulSoup as BS
 
-def makeTimetable(filename: str = "response.xml") -> list: 
-    """
-    """
+def getSoup(filename: str = "response.xml") -> BS:
     try:
         with open(filename, 'r', encoding="utf-8") as file:
             print(f'Reading timetable" {filename} ...')
             timetable = file.read()
             dsoup = BS(timetable, "lxml-xml") # parse with XML parser
+            print(dsoup)
+            return dsoup
     except:
         print("ERROR: cannot open", filename)
-    print(type(timetable))
-    
+
+def makeTimetable(dsoup: BS) -> list: 
+    """
+    """
     scheduleMap = [[[]]] # Declare 3D list
-    print(dsoup)
+    
    	# Getting all courses
     courses = dsoup.find_all('Course')
     for course in courses:
@@ -39,7 +41,8 @@ def makeTimetable(filename: str = "response.xml") -> list:
 # Hours: 07:00 - 19:00 -> 24 blocks
 
 if __name__ == '__main__':
-    makeTimetable()
+    soup = getSoup()
+    makeTimetable(soup)
 
 
 
