@@ -17,7 +17,7 @@ def getSoup(filename: str = "response.xml") -> BS:
 def makeTimetable(dsoup: BS) -> list: 
     """
     """
-    scheduleMap = [[[]]] # Declare 3D list
+    schedule = [[[]]] # Declare 3D list
     
    	# Getting all courses
     courses = dsoup.find_all('Course')
@@ -26,7 +26,7 @@ def makeTimetable(dsoup: BS) -> list:
         courseName = dsoup.CrsID.string
         print(courseName)
 
-    return scheduleMap
+    return schedule
 
     # <Course> - each course
     # <CrsID> - course name/ID
@@ -42,8 +42,8 @@ def makeTimetable(dsoup: BS) -> list:
 
 if __name__ == '__main__':
     soup = getSoup()
-    makeTimetable(soup)
-
+    scheduleMap = makeTimetable(soup)
+    print(scheduleMap)
 
 
 

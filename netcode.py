@@ -5,7 +5,7 @@ def trim(xml: str) -> str:
     """Trim the response code from the SRS to remove extraneous request details."""
     tmp = BS(xml, "lxml-xml") # parse with XML parser
     rtag = tmp.Results
-    return str(rtag.contents)
+    return str(rtag.contents[1])
 
 def filewriter(txt: str) -> None:
     """Write a string to a file."""
@@ -185,4 +185,4 @@ def get_data_as_file(dept: str, session: str = "S2025") -> None:
 
 if __name__ == '__main__':
     print(makeRequest("CSCI"))
-    get_data_as_file("CSCI", "S2025")
+    get_data_as_file("CSCI")
