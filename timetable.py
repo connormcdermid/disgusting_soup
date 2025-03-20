@@ -3,13 +3,14 @@
 
 from bs4 import BeautifulSoup as BS
 
+
 def getSoup(filename: str = "response.xml") -> BS:
     try:
         with open(filename, 'r', encoding="utf-8") as file:
             print(f'Reading timetable" {filename} ...')
             timetable = file.read()
             dsoup = BS(timetable, "lxml-xml") # parse with XML parser
-            print(dsoup)
+            # print(dsoup)
             return dsoup
     except:
         print("ERROR: cannot open", filename)
@@ -22,9 +23,12 @@ def makeTimetable(dsoup: BS) -> list:
    	# Getting all courses
     courses = dsoup.find_all('Course')
     for course in courses:
-        print(course)
-        courseName = dsoup.CrsID.string
+        # print(course)
+        courseName = course.CrsID.string
         print(courseName)
+        print("Intakes: ")
+        intakes = course.find_all('Intake')
+        print([intake.string for intake in intakes])
 
     return schedule
 
