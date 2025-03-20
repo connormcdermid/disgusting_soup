@@ -5,7 +5,9 @@ def trim(xml: str) -> str:
     """Trim the response code from the SRS to remove extraneous request details."""
     tmp = BS(xml, "lxml-xml") # parse with XML parser
     rtag = tmp.Results
-    return str(rtag.contents[1])
+    rstr = str(rtag.contents[1])
+    retstr = ''.join(line.strip() for line in rstr.split('\n')) # purge *all* newlines
+    return retstr
 
 def filewriter(txt: str) -> None:
     """Write a string to a file."""
