@@ -185,3 +185,4 @@ def get_data_as_file(dept: str, session: str = "S2025") -> None:
 
 if __name__ == '__main__':
     print(makeRequest("CSCI"))
+    get_data_as_file("CSCI", "S2025")
