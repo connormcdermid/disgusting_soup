@@ -3,12 +3,12 @@
 
 from bs4 import BeautifulSoup as BS
 from Course import Course
-
+from Day import Day
 
 def getSoup(filename: str = "response.xml") -> BS:
     try:
         with open(filename, 'r', encoding="utf-8") as file:
-            print(f'Reading timetable" {filename} ...')
+            print(f'Reading timetable {filename} ...')
             timetable = file.read()
             dsoup = BS(timetable, "lxml-xml") # parse with XML parser
             # print(dsoup)
@@ -23,10 +23,48 @@ def get_courses(dsoup: BS) -> list[Course]:
         courses.append(Course(course)) # append a new Course object
     return courses
 
-def makeTimetable(dsoup: BS) -> list: 
+def getDayIndex(day: str) -> int:
+    dayIndex = {0: ['U', 'Su', 'Sunday'], 
+                1: ['M', 'Mo', 'Monday'],
+                2: ['T', 'Tu', 'Tuesday'],         
+                3: ['W', 'We', 'Wednesday'],     
+                4: ['R', 'Th', 'Thursday'], 
+                5: ['F', 'Fr', 'Friday'], 
+                6: ['S', 'Sa', 'Saturday']}  
+    
+    for key, val in dayIndex.items():
+        if day in val:
+            return key
+    
+    return -1 
+
+def getDayFromIndex(index: int) -> str:
+    dayIndex = {0: ['U', 'Su', 'Sunday'], 
+                1: ['M', 'Mo', 'Monday'],
+                2: ['T', 'Tu', 'Tuesday'],         
+                3: ['W', 'We', 'Wednesday'],     
+                4: ['R', 'Th', 'Thursday'], 
+                5: ['F', 'Fr', 'Friday'], 
+                6: ['S', 'Sa', 'Saturday']}  
+    
+    return dayIndex.get(index)[2]
+
+def makeTimetable(courses: list[Course]) -> list[Day]: 
     """
     """
-    schedule = [[[]]] # Declare 3D list
+    schedule = [] 
+    for i in range(7):
+        schedule.append(Day()) 
+
+    for course in courses:
+        for day in course.times.keys(): 
+            dayInd = getDayIndex(day)
+            for time in course.times[day]:
+                
+                schedule[dayInd].addTime(course.name, time[0], time[1])
+        
+    return schedule
+"""        
     
    	# Getting all courses
     courses = dsoup.find_all('Course')
@@ -39,26 +77,36 @@ def makeTimetable(dsoup: BS) -> list:
         sections = course.find_all('Section')
         print(sections.Intake.string, ": ", )
 
-
-    return schedule
-
-    # <Course> - each course
-    # <CrsID> - course name/ID
-    # <Intake> - section name
-    # <sessioncode> - S2025
-    # <DaysOfWeekShortNames> - Su, Mo, Tu, We, Th, Fr, Sa
-    # <StartTime> - 1430
-    # <EndTime> - 1530
+"""
 
 
-# Days: Sunday - Saturday -> 7 blocks
-# Hours: 07:00 - 19:00 -> 24 blocks
+
+def scheduleHeatmap(schedule: list[Day]) -> list[Day]:
+    heatmap = [] 
+    for i in range(7):
+        heatmap.append(Day()) 
+
+    for day in schedule:
+        dayIndex = schedule.index(day)
+        for time in day.table.keys():
+            heatmap[dayIndex].table[time] = len(day.table[time])
+    return heatmap
+
 
 if __name__ == '__main__':
     soup = getSoup()
     courses = get_courses(soup)
-    for course in courses:
-        course.print_times()
-
-
-
+    s = makeTimetable(courses)
+    for day in s:
+        print("Day:", getDayFromIndex(s.index(day)))
+        
+        for time in day.table.keys():
+            if (len(day.table[time]) > 0):
+                print(time, "-", day.table[time])
+    
+    h = scheduleHeatmap(s)
+    for day in h:
+        print("Day:", getDayFromIndex(h.index(day)))
+        
+        for time in day.table.keys():
+            print("Number of courses at:", time, "-", day.table[time])
