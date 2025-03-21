@@ -15,11 +15,25 @@ class Course:
             for mtg in loc.Meetings:
                 days = str(mtg.DaysOfWeek.string).split()
                 start_time = str(mtg.StartTime.string)
-                end_time = str(mtg.EndTime.string)
+                end_time = str(mtg.EndTime.string)               
                 for day in days:
-                    self.times[day] = (start_time, end_time)
+                    if day not in self.times.keys():
+                        self.times[day] = []
+                    if (start_time, end_time) not in self.times[day]:
+                        self.times[day].append((start_time, end_time))
 
     def print_times(self):
-        print(self.name, ":\n", ["{day}: {start_time} - {end_time}".format(
-            day = day, start_time = t[0], end_time = t[1]
-        ) for day, t in self.times.items()])
+        """
+        for day in self.times.keys():
+            for t in self.times[day]:
+                print(self.name, ":\n", ["{day}: {start_time} - {end_time}".format(
+                day = day, start_time = t[0], end_time = t[1])])
+         """
+        print(self.name, ":\n", end =" ")
+        for day in self.times.keys():
+            print(day, ': ', end ="")
+            for t in self.times[day]:
+                print(["{start_time} - {end_time}".format(
+                start_time = t[0], end_time = t[1])], end =" ")  
+        print()       
+                
