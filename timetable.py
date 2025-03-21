@@ -2,6 +2,7 @@
 # constructs timetable array
 
 from bs4 import BeautifulSoup as BS
+from Course import Course
 
 
 def getSoup(filename: str = "response.xml") -> BS:
@@ -15,6 +16,13 @@ def getSoup(filename: str = "response.xml") -> BS:
     except:
         print("ERROR: cannot open", filename)
 
+def get_courses(dsoup: BS) -> list[Course]:
+    tags = dsoup.find_all('Course')
+    courses = []
+    for course in tags:
+        courses.append(Course(course)) # append a new Course object
+    return courses
+
 def makeTimetable(dsoup: BS) -> list: 
     """
     """
@@ -22,13 +30,15 @@ def makeTimetable(dsoup: BS) -> list:
     
    	# Getting all courses
     courses = dsoup.find_all('Course')
+
     for course in courses:
         # print(course)
         courseName = course.CrsID.string
         print(courseName)
-        print("Intakes: ")
-        intakes = course.find_all('Intake')
-        print([intake.string for intake in intakes])
+        print("Meeting Times: ")
+        sections = course.find_all('Section')
+        print(sections.Intake.string, ": ", )
+
 
     return schedule
 
@@ -46,8 +56,9 @@ def makeTimetable(dsoup: BS) -> list:
 
 if __name__ == '__main__':
     soup = getSoup()
-    scheduleMap = makeTimetable(soup)
-    print(scheduleMap)
+    courses = get_courses(soup)
+    for course in courses:
+        course.print_times()
 
 
 

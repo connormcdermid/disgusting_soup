@@ -4,4 +4,6 @@ venv/*
 venv/**/*
 .idea
 *.xml
-
+__pycache__
+__pycache/*
+__pycache/**/*
