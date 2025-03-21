@@ -2,7 +2,9 @@ from bs4 import BeautifulSoup as BS
 
 
 class Course:
-
+    """
+    Initializes a Course object given a soup that contains information for one course.
+    """
     def __init__(self, course_tag: BS):
         self.name = str(course_tag.CrsID.string) + " " + str(course_tag.Section.Intake.string)
         self.times = {}
@@ -10,6 +12,9 @@ class Course:
         for sec in self.sections:
             self.get_times(sec)
 
+    """
+    Gets all the times from a course and adds it to the Course object.
+    """
     def get_times(self, section: BS):
         for loc in section.find_all('Location'):
             for mtg in loc.Meetings:
