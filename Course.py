@@ -19,10 +19,11 @@ class Course:
         for sec in self.sections:
             self.get_times(sec)
 
-    """
-    Gets all the times from a course and adds it to the Course object.
-    """
+
     def get_times(self, section: BS):
+        """
+        Gets all the times from a course and adds it to the Course object.
+        """
         for loc in section.find_all('Location'):
             for mtg in loc.Meetings:
                 days = str(mtg.DaysOfWeek.string).split()
@@ -35,6 +36,9 @@ class Course:
                         self.times[day].append((start_time, end_time))
 
     def print_times(self):
+        """
+        Print the course times to the console.
+        """
         """
         for day in self.times.keys():
             for t in self.times[day]:
