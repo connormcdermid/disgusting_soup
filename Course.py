@@ -4,6 +4,13 @@ from bs4 import BeautifulSoup as BS
 class Course:
 
     def __init__(self, course_tag: BS):
+        """
+        Initialises a new Course based on a BeautifulSoup tag.
+
+        Creates a new Course object with representations of time, days, course names and sections
+        based on data contained in the BS object.
+        :param course_tag: Beautiful Soup tag object
+        """
         self.name = str(course_tag.CrsID.string) + " " + str(course_tag.Section.Intake.string)
         self.times = {}
         self.sections = course_tag.find_all('Section')
