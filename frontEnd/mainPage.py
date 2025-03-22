@@ -65,8 +65,15 @@ def get_term_code() -> str:
     print(code)
     return code
 
+# Return a subject name
+def get_subject_name() -> str:
+    subject = comboBoxSubject.currentText()
+    print(subject)
+    return subject
+
 comboBoxSubject.currentIndexChanged.connect(get_course_code)
 comboBoxTerm.currentIndexChanged.connect(get_term_code)
+comboBoxSubject.currentIndexChanged.connect(get_subject_name)
 
 mainPage.showFullScreen()
 app.exec()
