@@ -1,10 +1,10 @@
-# parsing function
-# constructs timetable array
-
 from bs4 import BeautifulSoup as BS
 from Course import Course
 from Day import Day
 
+"""
+Given an XML file, reads the file and constructs a BeautifulSoup object out of it.
+"""
 def getSoup(filename: str = "response.xml") -> BS:
     try:
         with open(filename, 'r', encoding="utf-8") as file:
@@ -16,6 +16,9 @@ def getSoup(filename: str = "response.xml") -> BS:
     except:
         print("ERROR: cannot open", filename)
 
+"""
+Given a BeautifulSoup object (parsed XML document), creates a list of Course objects to be used to make a timetable.
+"""
 def get_courses(dsoup: BS) -> list[Course]:
     tags = dsoup.find_all('Course')
     courses = []
@@ -23,6 +26,10 @@ def get_courses(dsoup: BS) -> list[Course]:
         courses.append(Course(course)) # append a new Course object
     return courses
 
+"""
+Gets passed a day string (of any of the 3 forms found in the XML doc), and returns the
+appropriate index for that day in a timetable.
+"""
 def getDayIndex(day: str) -> int:
     dayIndex = {0: ['U', 'Su', 'Sunday'], 
                 1: ['M', 'Mo', 'Monday'],
@@ -38,6 +45,10 @@ def getDayIndex(day: str) -> int:
     
     return -1 
 
+"""
+Given an index from a timetable, returns the appropriate day for that index (returns all 3 forms).
+Can choose which form you want to use by doing getDayFromIndex(index)[0-2]
+"""
 def getDayFromIndex(index: int) -> str:
     dayIndex = {0: ['U', 'Su', 'Sunday'], 
                 1: ['M', 'Mo', 'Monday'],
@@ -48,6 +59,12 @@ def getDayFromIndex(index: int) -> str:
                 6: ['S', 'Sa', 'Saturday']}  
     
     return dayIndex.get(index)[2]
+
+"""
+Constructs a timetable given a list of courses. This timetable is a list of 7 Day objects.
+Each Day object contains a dictionary, where the keys are timeblocks and the values are the 
+courses at that timeblock.
+"""
 
 def makeTimetable(courses: list[Course]) -> list[Day]: 
     """
@@ -64,30 +81,18 @@ def makeTimetable(courses: list[Course]) -> list[Day]:
                 schedule[dayInd].addTime(course.name, time[0], time[1])
         
     return schedule
-"""        
-    
-   	# Getting all courses
-    courses = dsoup.find_all('Course')
-
-    for course in courses:
-        # print(course)
-        courseName = course.CrsID.string
-        print(courseName)
-        print("Meeting Times: ")
-        sections = course.find_all('Section')
-        print(sections.Intake.string, ": ", )
 
 """
-
-
-
-def scheduleHeatmap(schedule: list[Day]) -> list[Day]:
+Given a timetable, creates a timetable-like list that associates each time block in a day with an integer.
+This integer represents the number of courses in session during that particular timeblock on that day.
+"""
+def scheduleHeatmap(timetable: list[Day]) -> list[Day]:
     heatmap = [] 
     for i in range(7):
         heatmap.append(Day()) 
 
-    for day in schedule:
-        dayIndex = schedule.index(day)
+    for day in timetable:
+        dayIndex = timetable.index(day)
         for time in day.table.keys():
             heatmap[dayIndex].table[time] = len(day.table[time])
     return heatmap
@@ -105,8 +110,6 @@ if __name__ == '__main__':
                 print(time, "-", day.table[time])
     
     h = scheduleHeatmap(s)
-    for day in h:
-        print("Day:", getDayFromIndex(h.index(day)))
-        
+    for day in h:       
         for time in day.table.keys():
-            print("Number of courses at:", time, "-", day.table[time])
+            print("Number of courses at:", getDayFromIndex(h.index(day)), ":", time, "-", day.table[time])
