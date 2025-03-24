@@ -4,7 +4,13 @@ from bs4 import BeautifulSoup as BS
 class Course:
     """A class that contains data about a particular course"""
     def __init__(self, course_tag: BS):
-        """Initializes the Course object and its attributes, calls function to extract data from beautiful soup object."""
+        """
+        Initialises a new Course based on a BeautifulSoup tag.
+
+        Creates a new Course object with representations of time, days, course names and sections
+        based on data contained in the BS object.
+        :param course_tag: Beautiful Soup tag object
+        """
         self.name = str(course_tag.CrsID.string) + " " + str(course_tag.Section.Intake.string)
         self.times = {}
         self.sections = course_tag.find_all('Section')
@@ -13,7 +19,7 @@ class Course:
 
 
     def get_times(self, section: BS):
-        """extract times and day information from a beautiful soup object, add to the object's stored timetable """
+        """extract times and day information from a beautiful soup object, add to the Course object's stored timetable """
         for loc in section.find_all('Location'):
             for mtg in loc.Meetings:
                 days = str(mtg.DaysOfWeek.string).split()
@@ -29,6 +35,9 @@ class Course:
         """ Print the time/day data stored within the Course Object."""
         
         
+        """
+        Print the course times to the console.
+        """
         """
         for day in self.times.keys():
             for t in self.times[day]:

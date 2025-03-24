@@ -2,10 +2,11 @@ from bs4 import BeautifulSoup as BS
 from Course import Course
 from Day import Day
 
-"""
-Given an XML file, reads the file and constructs a BeautifulSoup object out of it.
-"""
+
 def getSoup(filename: str = "response.xml") -> BS:
+    """
+    Given an XML file, reads the file and constructs a BeautifulSoup object out of it.
+    """
     try:
         with open(filename, 'r', encoding="utf-8") as file:
             print(f'Reading timetable {filename} ...')
@@ -16,21 +17,24 @@ def getSoup(filename: str = "response.xml") -> BS:
     except:
         print("ERROR: cannot open", filename)
 
-"""
-Given a BeautifulSoup object (parsed XML document), creates a list of Course objects to be used to make a timetable.
-"""
+
 def get_courses(dsoup: BS) -> list[Course]:
+    """
+    Given a BeautifulSoup object (parsed XML document), creates a list of Course objects to be used to make a timetable.
+    """
     tags = dsoup.find_all('Course')
     courses = []
     for course in tags:
         courses.append(Course(course)) # append a new Course object
     return courses
 
-"""
-Gets passed a day string (of any of the 3 forms found in the XML doc), and returns the
-appropriate index for that day in a timetable.
-"""
+
 def getDayIndex(day: str) -> int:
+    """
+    Gets passed a day string (of any of the 3 forms found in the XML doc), and returns the
+    appropriate index for that day in a timetable.
+    """
+    """
     dayIndex = {0: ['U', 'Su', 'Sunday'], 
                 1: ['M', 'Mo', 'Monday'],
                 2: ['T', 'Tu', 'Tuesday'],         
@@ -44,13 +48,40 @@ def getDayIndex(day: str) -> int:
             return key
     
     return -1 
+    """
+    match day:
+        case "U" | "Su" | "Sunday":
+            return 0
+        case "M" | "Mo" | "Monday":
+            return 1
+        case "T" | "Tu" | "Tuesday":
+            return 2
+        case "W" | "We" | "Wednesday":
+            return 3
+        case "R" | "Th" | "Thursday":
+            return 4
+        case "F" | "Fr" | "Friday":
+            return 5
+        case "S" | "Sa" | "Saturday":
+            return 6
+        case _:
+            return -1 # Default case
 
-"""
-Given an index from a timetable, returns the appropriate day for that index (returns all 3 forms).
-Can choose which form you want to use by doing getDayFromIndex(index)[0-2]
-"""
-def getDayFromIndex(index: int) -> str:
-    dayIndex = {0: ['U', 'Su', 'Sunday'], 
+
+def getDayFromIndex(index: int, form: int = 2) -> str:
+    """
+    Get a day of the week by index.
+
+    Get a day of the week by an index. Sunday is 0. If keyword arg form is specified (from 0-2) the
+    day will be returned in a different format.
+    0: Single letter
+    1: Two letter abbreviation
+    2: Full name.
+    :param index: Index of day of the week
+    :param form: Form to retrieve day as
+    :return: Day, in specified form.
+    """
+    dayIndex = {0: ['U', 'Su', 'Sunday'],
                 1: ['M', 'Mo', 'Monday'],
                 2: ['T', 'Tu', 'Tuesday'],         
                 3: ['W', 'We', 'Wednesday'],     
@@ -58,16 +89,14 @@ def getDayFromIndex(index: int) -> str:
                 5: ['F', 'Fr', 'Friday'], 
                 6: ['S', 'Sa', 'Saturday']}  
     
-    return dayIndex.get(index)[2]
+    return dayIndex.get(index)[form]
 
-"""
-Constructs a timetable given a list of courses. This timetable is a list of 7 Day objects.
-Each Day object contains a dictionary, where the keys are timeblocks and the values are the 
-courses at that timeblock.
-"""
 
-def makeTimetable(courses: list[Course]) -> list[Day]: 
+def makeTimetable(courses: list[Course]) -> list[Day]:
     """
+    Constructs a timetable given a list of courses. This timetable is a list of 7 Day objects.
+    Each Day object contains a dictionary, where the keys are timeblocks and the values are the
+    courses at that timeblock.
     """
     schedule = [] 
     for i in range(7):
@@ -82,11 +111,12 @@ def makeTimetable(courses: list[Course]) -> list[Day]:
         
     return schedule
 
-"""
-Given a timetable, creates a timetable-like list that associates each time block in a day with an integer.
-This integer represents the number of courses in session during that particular timeblock on that day.
-"""
+
 def scheduleHeatmap(timetable: list[Day]) -> list[Day]:
+    """
+    Given a timetable, creates a timetable-like list that associates each time block in a day with an integer.
+    This integer represents the number of courses in session during that particular timeblock on that day.
+    """
     heatmap = [] 
     for i in range(7):
         heatmap.append(Day()) 
