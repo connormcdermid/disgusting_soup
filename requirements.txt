@@ -2,4 +2,4 @@ beautifulsoup4
 lxml
 pytictoc
 requests
-sphinx
+PyQt6
