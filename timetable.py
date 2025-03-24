@@ -2,6 +2,18 @@ from bs4 import BeautifulSoup as BS
 from Course import Course
 from Day import Day
 
+def getSoupStr(response: str) -> BS:
+    """
+    Given a String containing XML, construct a BS object out of it
+    :param response: XML string
+    :return: BS object
+    """
+    try:
+        dsoup = BS(response, "lxml-xml")
+        return dsoup
+    except: # I know the exception's a little broad but I have no idea what BS might throw
+        print("ERROR converting string response to BS object.")
+
 
 def getSoup(filename: str = "response.xml") -> BS:
     """
