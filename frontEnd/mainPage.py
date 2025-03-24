@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QComboBox, QVBoxLayout, QPushButton
 from PyQt6.QtCore import Qt
+from main import linkage
 
 subject_codes = {
     "Accounting": "ACCT", "Anthropology": "ANTH", "Art Studies (General)": "ARTS", "Asian Studies": "ASIA",
@@ -78,6 +79,7 @@ def submit_clicked():
     courseCode = get_course_code()
     termCode = get_term_code()
     subjectName = get_subject_name()
+    res = linkage(courseCode, termCode)
     
 submitButton.clicked.connect(submit_clicked)
 
