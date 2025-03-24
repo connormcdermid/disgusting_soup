@@ -42,6 +42,7 @@ termLabel = QLabel("Please, select the term")
 termLabel.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
 submitButton = QPushButton("Submit")
+quitButton = QPushButton("Quit")
 
 # Responsive layout
 layout = QVBoxLayout()
@@ -50,6 +51,7 @@ layout.addWidget(comboBoxSubject)
 layout.addWidget(termLabel)
 layout.addWidget(comboBoxTerm)
 layout.addWidget(submitButton)
+layout.addWidget(quitButton)
 
 layout.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Align the whole layout center
 mainPage.setLayout(layout)
@@ -80,6 +82,7 @@ def submit_clicked():
     subjectName = get_subject_name()
     
 submitButton.clicked.connect(submit_clicked)
+quitButton.clicked.connect(app.quit)
 
 mainPage.showFullScreen()
 app.exec()
