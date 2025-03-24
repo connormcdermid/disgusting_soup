@@ -29,6 +29,29 @@ def getSoup(filename: str = "response.xml") -> BS:
     except:
         print("ERROR: cannot open", filename)
 
+def get_timetable(dsoup: BS) -> list[Day]:
+    """
+    Make and return a Timetable from a BS response
+
+    Helper function called by main linkage to fetch timetable data
+    :param dsoup: BS response
+    :return: timetable data as list[Day]
+    """
+    input_courses = get_courses(dsoup)
+    tmtbl = makeTimetable(input_courses)
+    return tmtbl
+
+def get_heatmap(dsoup: BS) -> list[Day]:
+    """
+    Make and return a Heatmap from a BS response
+
+    Helper function called by main linkade to fetch heatmap
+    :param dsoup: BS response
+    :return: Heatmap data as list[Day]
+    """
+    tmtbl = get_timetable(dsoup)
+    htmp = scheduleHeatmap(tmtbl);
+    return htmp
 
 def get_courses(dsoup: BS) -> list[Course]:
     """

@@ -170,12 +170,12 @@ def makeRequest(dept: str, session: str = "S2025") -> str:
 
 def get_data_as_file(dept: str, session: str = "S2025") -> None:
     """
-    Get timetable data written to a file.
+    !!!DEPRECATED!!! Get timetable data written to a file.
 
     Write timetable data to a file named "response.xml" to be used by later programs.
     Please pass this function: a course area, as a three- or four-letter department code,
     and the term you wish to fetch, as a string in the format S<year> or F<year>,
-    defaulting to S2025.
+    defaulting to S2025. Deprecated. Use only for debug purposes.
     :param dept: Department code or name
     :param session: Term code
     :return: None -- data outputted to response.xml in working directory.

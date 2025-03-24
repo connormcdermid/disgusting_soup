@@ -1,6 +1,7 @@
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QComboBox, QVBoxLayout, QPushButton
+from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QComboBox, QVBoxLayout, QPushButton, QMessageBox
 from PyQt6.QtCore import Qt
 from main import linkage
+from timetable import getDayFromIndex as day_name
 
 subject_codes = {
     "Accounting": "ACCT", "Anthropology": "ANTH", "Art Studies (General)": "ARTS", "Asian Studies": "ASIA",
@@ -81,8 +82,19 @@ def submit_clicked():
     courseCode = get_course_code()
     termCode = get_term_code()
     subjectName = get_subject_name()
-    res = linkage(courseCode, termCode)
-    
+    res = linkage(courseCode, termCode) # res[0] is timetable, res[1] is heatmap
+    dlg = QMessageBox()
+    dlg.setWindowTitle("Response")
+    txt = ""
+    for idx, day in enumerate(res[0]):
+        txt += "{day}: \n {contents}".format(day=day_name(idx),
+                                             contents=day.__str__())
+    dlg.setText(txt)
+    box = dlg.exec()
+    if box == QMessageBox.StandardButton.Ok:
+        print("OK!")
+
+
 submitButton.clicked.connect(submit_clicked)
 quitButton.clicked.connect(app.quit)
 
