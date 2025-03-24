@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QComboBox, QVBoxLayout
+from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QComboBox, QVBoxLayout, QPushButton
 from PyQt6.QtCore import Qt
 
 subject_codes = {
@@ -12,7 +12,7 @@ subject_codes = {
     "Global Studies": "GLST", "Graphic Arts": "GDAG", "Health Sciences & Human Services": "HSER", "History": "HIST",
     "Horticulture": "HORT", "Hospitality Management": "HOSP", "Human Services": "HSER", "Indigenous/Xwulmuxw Studies": "INDG",
     "Information Tech & Applied Systems": "ITAS", "Interdisciplinary Studies": "IDST", "Interior Design": "INTR",
-    "Internship": "INTP", "Japanese": "JPNS", "Kinesiology": "KIN", "Law": "LAW", "Liberal Studies": "LBST",
+    "Internship": "INTP", "Japanese": "JPNS", "Kinesiology": "KIN", "Law": "LAWW", "Liberal Studies": "LBST",
     "Linguistics": "LING", "Management": "MGMT", "Marketing": "MRKT", "Mathematics": "MATH", "Media Studies": "MDIA",
     "Music": "MUS", "Nursing – Generic Baccalaureate": "NURS", "Philosophy": "PHIL", "Physical Education – se Kinesiology": "PHED",
     "Physics": "PHYS", "Political Studies": "POLI", "Practical Nursing": "PNUR", "Prior Learning Assessment": "PLAR",
@@ -41,12 +41,15 @@ subjectLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 termLabel = QLabel("Please, select the term")
 termLabel.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
+submitButton = QPushButton("Submit")
+
 # Responsive layout
 layout = QVBoxLayout()
 layout.addWidget(subjectLabel)
 layout.addWidget(comboBoxSubject)
 layout.addWidget(termLabel)
 layout.addWidget(comboBoxTerm)
+layout.addWidget(submitButton)
 
 layout.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Align the whole layout center
 mainPage.setLayout(layout)
@@ -71,9 +74,12 @@ def get_subject_name() -> str:
     print(subject)
     return subject
 
-comboBoxSubject.currentIndexChanged.connect(get_course_code)
-comboBoxTerm.currentIndexChanged.connect(get_term_code)
-comboBoxSubject.currentIndexChanged.connect(get_subject_name)
+def submit_clicked():
+    courseCode = get_course_code()
+    termCode = get_term_code()
+    subjectName = get_subject_name()
+    
+submitButton.clicked.connect(submit_clicked)
 
 mainPage.showFullScreen()
 app.exec()
