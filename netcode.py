@@ -202,4 +202,5 @@ def get_data_as_string(dept: str, session: str = "S2025") -> str:
     return trimmed
 
 if __name__ == '__main__':
+    print(makeRequest("CSCI"))
     get_data_as_file("CSCI")
