@@ -19,7 +19,11 @@ class Course:
 
 
     def get_times(self, section: BS):
-        """extract times and day information from a beautiful soup object, add to the Course object's stored timetable """
+        """extract times and day information from a beautiful soup object, add to the Course object's stored timetable
+
+        Args:
+            section (BS): A beautifulsoup object containing the course information pulled from VIU's website
+        """
         for loc in section.find_all('Location'):
             for mtg in loc.Meetings:
                 days = str(mtg.DaysOfWeek.string).split()
@@ -32,12 +36,9 @@ class Course:
                         self.times[day].append((start_time, end_time))
 
     def print_times(self):
-        """ Print the time/day data stored within the Course Object."""
-        
-        
+        """ Print the time/day data stored within the Course Object.
         """
-        Print the course times to the console.
-        """
+
         """
         for day in self.times.keys():
             for t in self.times[day]:
