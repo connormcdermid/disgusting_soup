@@ -110,6 +110,8 @@ def submit_clicked():
         plt.title("Class Times: {day}".format(day=day_name(idx)))
         plt.xlabel("Times")
         plt.ylabel("Number of Classes")
+        ax = plt.gca() # get current axes
+        ax.set_ylim([0, 6])
         plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
 
     plt.show()
