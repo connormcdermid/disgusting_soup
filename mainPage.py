@@ -88,6 +88,7 @@ def submit_clicked():
     tmtbl = res[0]
     htmp = res[1]
     # display timetable
+    """ commented out for debug purposes
     dlg = QMessageBox()
     dlg.setWindowTitle("Response")
     txt = ""
@@ -98,14 +99,19 @@ def submit_clicked():
     box = dlg.exec()
     if box == QMessageBox.StandardButton.Ok:
         print("OK!")
-    # display heatmap as histogram
-    data_mon = htmp[1].table.values()
-    bins_mon = len(htmp[1].table.keys())
-    plt.hist(data_mon, bins=bins_mon, color='skyblue', edgecolor='black')
-    plt.xlabel("Times")
-    plt.ylabel("Classes")
-    plt.title("Availability")
+    """
+    for idx, day in enumerate(htmp[1:6], start=1):
+        plt.figure(day_name(idx))
+        plt.bar(range(len(day.table)), list(day.table.values()), align='center')
+        # print(list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(htmp[1].table.keys()))))
+        plt.xticks(range(len(day.table)),
+                   list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(day.table.keys()))),
+                   rotation='vertical')
+        plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
+
     plt.show()
+    # display heatmap as bar plot
+
 
 
 
