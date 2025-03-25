@@ -3,3 +3,5 @@ lxml
 pytictoc
 requests
 PyQt6
+matplotlib
+numpy

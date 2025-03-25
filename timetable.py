@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup as BS
 from Course import Course
 from Day import Day
+from itertools import groupby
 
 def getSoupStr(response: str) -> BS:
     """
@@ -145,6 +146,15 @@ def makeTimetable(courses: list[Course]) -> list[Day]:
                 schedule[dayInd].addTime(course.name, time[0], time[1])
         
     return schedule
+
+
+""" TODO: find blocks of free time
+def calc_freetime(timetable: list[Day]) -> dict:
+    for idx, day in enumerate(timetable):
+        for slot, cls in day.table.items():
+            if not cls:
+                start = ""
+"""
 
 
 def scheduleHeatmap(timetable: list[Day]) -> list[Day]:

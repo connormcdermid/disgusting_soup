@@ -2,6 +2,8 @@ from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QComboBox, QVBoxLayou
 from PyQt6.QtCore import Qt
 from main import linkage
 from timetable import getDayFromIndex as day_name
+from matplotlib import pyplot as plt
+import numpy as np
 
 subject_codes = {
     "Accounting": "ACCT", "Anthropology": "ANTH", "Art Studies (General)": "ARTS", "Asian Studies": "ASIA",
@@ -83,16 +85,30 @@ def submit_clicked():
     termCode = get_term_code()
     subjectName = get_subject_name()
     res = linkage(courseCode, termCode) # res[0] is timetable, res[1] is heatmap
+    tmtbl = res[0]
+    htmp = res[1]
+    # display timetable
     dlg = QMessageBox()
     dlg.setWindowTitle("Response")
     txt = ""
-    for idx, day in enumerate(res[0]):
+    for idx, day in enumerate(tmtbl):
         txt += "{day}: \n {contents}".format(day=day_name(idx),
                                              contents=day.__str__())
     dlg.setText(txt)
     box = dlg.exec()
     if box == QMessageBox.StandardButton.Ok:
         print("OK!")
+    # display heatmap as histogram
+    data_mon = htmp[1].table.values()
+    bins_mon = len(htmp[1].table.keys())
+    plt.hist(data_mon, bins=bins_mon, color='skyblue', edgecolor='black')
+    plt.xlabel("Times")
+    plt.ylabel("Classes")
+    plt.title("Availability")
+    plt.show()
+
+
+
 
 
 submitButton.clicked.connect(submit_clicked)
