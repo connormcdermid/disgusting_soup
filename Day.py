@@ -34,6 +34,16 @@ class Day:
 
             if key[0] >= start_time and key[1] <= end_time:
                 self.table[key].append(name)
+
+    def __str__(self) -> str:
+        ret = ""
+        for k, v in self.table.items():
+            if not v:
+                continue
+            ret += "From {start} to {end}: ".format(start = k[0], end = k[1])
+            ret += "{classlist}\n".format(classlist = v)
+        return ret
+
         
     
 

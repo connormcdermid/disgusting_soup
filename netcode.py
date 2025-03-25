@@ -170,12 +170,12 @@ def makeRequest(dept: str, session: str = "S2025") -> str:
 
 def get_data_as_file(dept: str, session: str = "S2025") -> None:
     """
-    Get timetable data written to a file.
+    !!!DEPRECATED!!! Get timetable data written to a file.
 
     Write timetable data to a file named "response.xml" to be used by later programs.
     Please pass this function: a course area, as a three- or four-letter department code,
     and the term you wish to fetch, as a string in the format S<year> or F<year>,
-    defaulting to S2025.
+    defaulting to S2025. Deprecated. Use only for debug purposes.
     :param dept: Department code or name
     :param session: Term code
     :return: None -- data outputted to response.xml in working directory.
@@ -184,6 +184,22 @@ def get_data_as_file(dept: str, session: str = "S2025") -> None:
     trimmed = trim(xml)
     filewriter(trimmed)
     return
+
+def get_data_as_string(dept: str, session: str = "S2025") -> str:
+    """
+    Get timetable data returned as a string.
+
+    Write timetable data returned as a string to be used by later programs.
+    Please pass this function: a course area, as a three- or four-letter department code,
+    and the term you wish to fetch, as a string in the format S<year> or F<year>,
+    defaulting to S2025.
+    :param dept: Deparment code or name
+    :param session: Term code
+    :return: String containing XML response
+    """
+    xml = makeRequest(dept, session)
+    trimmed = trim(xml)
+    return trimmed
 
 if __name__ == '__main__':
     print(makeRequest("CSCI"))

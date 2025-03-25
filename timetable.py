@@ -1,6 +1,19 @@
 from bs4 import BeautifulSoup as BS
 from Course import Course
 from Day import Day
+from itertools import groupby
+
+def getSoupStr(response: str) -> BS:
+    """
+    Given a String containing XML, construct a BS object out of it
+    :param response: XML string
+    :return: BS object
+    """
+    try:
+        dsoup = BS(response, "lxml-xml")
+        return dsoup
+    except: # I know the exception's a little broad but I have no idea what BS might throw
+        print("ERROR converting string response to BS object.")
 
 
 def getSoup(filename: str = "response.xml") -> BS:
@@ -17,6 +30,29 @@ def getSoup(filename: str = "response.xml") -> BS:
     except:
         print("ERROR: cannot open", filename)
 
+def get_timetable(dsoup: BS) -> list[Day]:
+    """
+    Make and return a Timetable from a BS response
+
+    Helper function called by main linkage to fetch timetable data
+    :param dsoup: BS response
+    :return: timetable data as list[Day]
+    """
+    input_courses = get_courses(dsoup)
+    tmtbl = makeTimetable(input_courses)
+    return tmtbl
+
+def get_heatmap(dsoup: BS) -> list[Day]:
+    """
+    Make and return a Heatmap from a BS response
+
+    Helper function called by main linkade to fetch heatmap
+    :param dsoup: BS response
+    :return: Heatmap data as list[Day]
+    """
+    tmtbl = get_timetable(dsoup)
+    htmp = scheduleHeatmap(tmtbl);
+    return htmp
 
 def get_courses(dsoup: BS) -> list[Course]:
     """
@@ -110,6 +146,15 @@ def makeTimetable(courses: list[Course]) -> list[Day]:
                 schedule[dayInd].addTime(course.name, time[0], time[1])
         
     return schedule
+
+
+""" TODO: find blocks of free time
+def calc_freetime(timetable: list[Day]) -> dict:
+    for idx, day in enumerate(timetable):
+        for slot, cls in day.table.items():
+            if not cls:
+                start = ""
+"""
 
 
 def scheduleHeatmap(timetable: list[Day]) -> list[Day]:
