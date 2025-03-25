@@ -107,6 +107,9 @@ def submit_clicked():
         plt.xticks(range(len(day.table)),
                    list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(day.table.keys()))),
                    rotation='vertical')
+        plt.title("Class Times: {day}".format(day=day_name(idx)))
+        plt.xlabel("Times")
+        plt.ylabel("Number of Classes")
         plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
 
     plt.show()
