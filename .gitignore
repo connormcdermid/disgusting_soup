@@ -5,6 +5,6 @@ venv/**/*
 .idea
 *.xml
 __pycache__
-__pycache/*
-__pycache/**/*
+__pycache__/*
+__pycache__/**/*
 documentation.pdf
