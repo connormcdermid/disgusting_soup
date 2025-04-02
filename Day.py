@@ -1,8 +1,9 @@
 class Day:
-    """A class to hold a day of the week that holds all of the 30 minute timeblocks for it in a table.
-    Each timeblock contains the name of a Course, should that course occur wihtin that time block.
-    The table will be a dictionary, it will consist of keys which are 30 minute timeblocks 
-    from 0700 - 2100 represented as tuples, and the values will be empty lists, which we will append courses to.
+    """
+    A class to hold a day of the week that holds all the 30 minute timeblocks for it in a table.
+
+    The table will be a dictionary, it will consist of keys which are 30 minute timeblocks
+    from 0700 to 2100 represented as tuples, and the values will be empty lists, which we will append courses to.
     """
     
     def __init__(self):
