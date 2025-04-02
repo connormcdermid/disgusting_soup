@@ -87,7 +87,7 @@ layout.addWidget(checkBoxTh)
 layout.addWidget(checkBoxF)
 layout.addWidget(submitButton)
 layout.addWidget(quitButton)
-layout.addWidget(videoWidget)
+#layout.addWidget(videoWidget) #If you uncoment it, it will be in a top left corner
 
 layout.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Align the whole layout center
 mainPage.setLayout(layout)
