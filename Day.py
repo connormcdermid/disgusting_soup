@@ -5,12 +5,11 @@ class Day:
     The table will be a dictionary, it will consist of keys which are 30 minute timeblocks
     from 0700 to 2100 represented as tuples, and the values will be empty lists, which we will append courses to.
     """
-
+    
     def __init__(self):
-        """
-            Initializes the Day object with a dictionary containing
-            all time slots for a day as keys, and a list as a value.
-            The list is used to store names of the courses that occur during that time block.
+        """Initializes the Day object with a dictionary containing
+        all time slots for a day as keys, and a list as a value.
+        The list is used to store names of the courses that occur during that time block
         """
         self.table = {}
         #this is NOT ass
@@ -21,9 +20,12 @@ class Day:
             
 
     def addTime(self, name: str, start_time: str, end_time: str):
-        """
-        adds a class's name that occurs within two times to the time blocks of the day table
-        that are within that time frame.
+        """Add a course to the correct time blocks contained in the object, given its start and end time.
+
+        Args:
+            name (str): name of the course
+            start_time (str): start time of the course, as a string of numbers, military time
+            end_time (str): end time of the course, as a string of numbers, military time
         """
         if (type(start_time) == int or type(end_time) == int):
             start_time = str(start_time).zfill(4)

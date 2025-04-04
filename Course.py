@@ -2,9 +2,7 @@ from bs4 import BeautifulSoup as BS
 
 
 class Course:
-    """
-    Initializes a Course object given a soup that contains information for one course.
-    """
+    """A class that contains data about a particular course"""
     def __init__(self, course_tag: BS):
         """
         Initialises a new Course based on a BeautifulSoup tag.
@@ -21,8 +19,10 @@ class Course:
 
 
     def get_times(self, section: BS):
-        """
-        Gets all the times from a course and adds it to the Course object.
+        """extract times and day information from a beautiful soup object, add to the Course object's stored timetable
+
+        Args:
+            section (BS): A beautifulsoup object containing the course information pulled from VIU's website
         """
         for loc in section.find_all('Location'):
             for mtg in loc.Meetings:
@@ -36,9 +36,9 @@ class Course:
                         self.times[day].append((start_time, end_time))
 
     def print_times(self):
+        """ Print the time/day data stored within the Course Object.
         """
-        Print the course times to the console.
-        """
+
         """
         for day in self.times.keys():
             for t in self.times[day]:
