@@ -1,6 +1,6 @@
 from Day import Day
 from timetable import makeTimetable
-
+from timetable import getDayFromIndex
 
 class algorithm:
     
@@ -27,12 +27,13 @@ class algorithm:
         return int(time)
         
     
-    def bestTimeInDay(self,day:Day, meetingLength:int)->dict:
+    def bestTimeInDay(self,day:Day, meetingLength:int,dayName:str)->dict:
         """Computes a "viability" score for each possible meeting time in a day.
 
         Args:
             day (Day): Contains course schedule for that day
             meetingLength (int): length of the meeting in MINUTES.
+            dayName (str): the name of the day
 
         Returns:
             list: some sort of tuple with the time block start and end, and its "viability" score? 
@@ -55,7 +56,7 @@ class algorithm:
                     #print(start)
                     
                         
-            meetingBlocks[(str(start).zfill(4),str(self.addTime(start,meetingLength)).zfill(4))]=score
+            meetingBlocks[(str(start).zfill(4),str(self.addTime(start,meetingLength)).zfill(4),dayName)]=score
             
         return meetingBlocks       
                 
@@ -74,7 +75,7 @@ class algorithm:
         
         
         bestTimes = []
-        for day in self.week:
-            bestTimes.append(self.bestTimeInDay(day,meetingLength))
+        for i in range(0,7):
+            bestTimes.append(self.bestTimeInDay(week[i],meetingLength,getDayFromIndex(i)))
         
     
