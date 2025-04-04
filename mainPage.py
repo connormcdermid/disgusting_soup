@@ -1,5 +1,7 @@
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QComboBox, QVBoxLayout, QPushButton, QMessageBox
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QComboBox, QVBoxLayout, QPushButton, QMessageBox, QCheckBox, QHBoxLayout, QSpacerItem, QSizePolicy
+from PyQt6.QtCore import Qt, QUrl, QTimer
+from PyQt6.QtMultimedia import QMediaPlayer
+from PyQt6.QtMultimediaWidgets import QVideoWidget
 from main import linkage
 from timetable import getDayFromIndex as day_name
 from matplotlib import pyplot as plt
@@ -18,15 +20,16 @@ subject_codes = {
     "Information Tech & Applied Systems": "ITAS", "Interdisciplinary Studies": "IDST", "Interior Design": "INTR",
     "Internship": "INTP", "Japanese": "JPNS", "Kinesiology": "KIN", "Law": "LAWW", "Liberal Studies": "LBST",
     "Linguistics": "LING", "Management": "MGMT", "Marketing": "MRKT", "Mathematics": "MATH", "Media Studies": "MDIA",
-    "Music": "MUS", "Nursing – Generic Baccalaureate": "NURS", "Philosophy": "PHIL", "Physical Education – se Kinesiology": "PHED",
+    "Music": "MUSC", "Nursing – Generic Baccalaureate": "NURS", "Philosophy": "PHIL", "Physical Education – se Kinesiology": "PHED",
     "Physics": "PHYS", "Political Studies": "POLI", "Practical Nursing": "PNUR", "Prior Learning Assessment": "PLAR",
     "Professional Indigenous Land Management": "PILM", "Psychology": "PSYC", "Quantitative Methods": "QUME",
     "Recreation & Sport Management": "RSM", "Religious Studies": "RLST", "Resource Management Officer": "RMOT",
     "Social Science Interdisciplinary": "SSID", "Social Service Worker": "SSWK", "Social Work": "SOWK", "Sociology": "SOCI",
-    "Spanish": "SPAN", "Studies in Women and Gender": "SWAG", "Study Skills": "STSK", "Theatre": "THEA", "Tourism Management": "TMGT"
+    "Spanish": "SPAN", "Studies in Women and Gender": "SWAG", "Study Skills": "STSK", "Theatre": "THEA", "Tourism Management": "TRMT"
 }
 
 term_codes = {"Fall 2024" : "F2024", "Spring 2025" : "S2025", "Fall 2025" : "F2025", "Spring 2026" : "S2026"}
+time_periods = ("30 minutes", "1 hour", "1.5 hours", "2 hours", "2.5 hours", "3 hours", "3.5 hours", "4 hours", "4.5 hours", "5 hours", "5.5 hours", "6 hours")
 
 app = QApplication([])
 mainPage = QWidget()
@@ -39,14 +42,35 @@ comboBoxSubject.addItems(subject_codes.keys())
 comboBoxTerm = QComboBox()
 comboBoxTerm.addItems(term_codes.keys())
 
+comboBoxTime = QComboBox()
+comboBoxTime.addItems(time_periods)
+
 subjectLabel = QLabel("Please, select the subject area")
 subjectLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
 termLabel = QLabel("Please, select the term")
 termLabel.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
+timeLabel = QLabel("Please, select the time period and days of the week you are available")
+timeLabel.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
 submitButton = QPushButton("Submit")
 quitButton = QPushButton("Quit")
+
+checkBoxM = QCheckBox("Monday")
+checkBoxT = QCheckBox("Tuesday")
+checkBoxW = QCheckBox("Wednesday")
+checkBoxTh = QCheckBox("Thursday")
+checkBoxF = QCheckBox("Friday")
+
+# QVideoWidget for the loading animation
+videoWidget = QVideoWidget()
+videoWidget.setVisible(False)  # Initially hidden
+videoWidget.autoFillBackground()
+
+# QMediaPlayer to play the MP4 file
+mediaPlayer = QMediaPlayer()
+mediaPlayer.setVideoOutput(videoWidget)
 
 # Responsive layout
 layout = QVBoxLayout()
@@ -54,8 +78,16 @@ layout.addWidget(subjectLabel)
 layout.addWidget(comboBoxSubject)
 layout.addWidget(termLabel)
 layout.addWidget(comboBoxTerm)
+layout.addWidget(timeLabel)
+layout.addWidget(comboBoxTime)
+layout.addWidget(checkBoxM)
+layout.addWidget(checkBoxT)
+layout.addWidget(checkBoxW)
+layout.addWidget(checkBoxTh)
+layout.addWidget(checkBoxF)
 layout.addWidget(submitButton)
 layout.addWidget(quitButton)
+#layout.addWidget(videoWidget) #If you uncoment it, animation will be in a top left corner
 
 layout.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Align the whole layout center
 mainPage.setLayout(layout)
@@ -80,10 +112,53 @@ def get_subject_name() -> str:
     print(subject)
     return subject
 
+# Return a time period
+def get_time_period() -> str:
+    time = comboBoxTime.currentText()
+    print(time)
+    return time
+
+# Returns a list of days for a meeting selected by the user 
+def handle_checkboxes() -> list:
+    days = []
+    if checkBoxM.isChecked():
+        days.append("M")
+    if checkBoxT.isChecked():
+        days.append("T")
+    if checkBoxW.isChecked():
+        days.append("W")
+    if checkBoxTh.isChecked():
+        days.append("Th")
+    if checkBoxF.isChecked():
+        days.append("F")
+    print(days)
+    return days
+
+# Function to show the loading animation
+def show_loading_animation():
+    videoWidget.setVisible(True)
+    mediaPlayer.setSource(QUrl.fromLocalFile("Multimedia/Chef_cooking.mp4"))  
+    mediaPlayer.play()
+
+# Function to hide the loading animation
+def hide_loading_animation():
+    mediaPlayer.stop()
+    videoWidget.setVisible(False)
+    videoWidget.close()
+
 def submit_clicked():
+
+    show_loading_animation()
+    QTimer.singleShot(3000, complete_submission) # I assume magic number here is milliseconds
+
+def complete_submission():
+    hide_loading_animation()
+    plt.close('all') # close all existing matplotlib windows
+
     courseCode = get_course_code()
     termCode = get_term_code()
     subjectName = get_subject_name()
+    timePeriod = get_time_period()
     res = linkage(courseCode, termCode) # res[0] is timetable, res[1] is heatmap
     tmtbl = res[0]
     htmp = res[1]
@@ -121,7 +196,11 @@ def submit_clicked():
 
 
 
-
+checkBoxM.stateChanged.connect(handle_checkboxes)
+checkBoxT.stateChanged.connect(handle_checkboxes)
+checkBoxW.stateChanged.connect(handle_checkboxes)
+checkBoxTh.stateChanged.connect(handle_checkboxes)
+checkBoxF.stateChanged.connect(handle_checkboxes)
 submitButton.clicked.connect(submit_clicked)
 quitButton.clicked.connect(app.quit)
 
