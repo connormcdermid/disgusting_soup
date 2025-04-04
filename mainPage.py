@@ -149,10 +149,11 @@ def hide_loading_animation():
 def submit_clicked():
 
     show_loading_animation()
-    QTimer.singleShot(4000, complete_submission)
+    QTimer.singleShot(3000, complete_submission) # I assume magic number here is milliseconds
 
 def complete_submission():
     hide_loading_animation()
+    plt.close('all') # close all existing matplotlib windows
 
     courseCode = get_course_code()
     termCode = get_term_code()
