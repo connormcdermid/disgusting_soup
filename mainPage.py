@@ -6,6 +6,7 @@ from main import linkage
 from timetable import getDayFromIndex as day_name
 from matplotlib import pyplot as plt
 import numpy as np
+from algorithm import *
 
 subject_codes = {
     "Accounting": "ACCT", "Anthropology": "ANTH", "Art Studies (General)": "ARTS", "Asian Studies": "ASIA",
@@ -118,12 +119,42 @@ def get_time_period() -> str:
     print(time)
     return time
 
+def get_time_as_int(time) -> int:
+    #"30 minutes", "1 hour", "1.5 hours", "2 hours", "2.5 hours", "3 hours", "3.5 hours", "4 hours", "4.5 hours", "5 hours", "5.5 hours", "6 hours"
+    match time:
+        case '30 minutes':
+            return 30
+        case '1 hour':
+            return 60
+        case '1.5 hours':
+            return 90
+        case '2 hours':
+            return 120
+        case '2.5 hours':
+            return 150
+        case '3 hours':
+            return 180
+        case '3.5 hours':
+            return 210
+        case '4 hours':
+            return 240
+        case '4.5 hours':
+            return 270
+        case '5 hours':
+            return 300
+        case '5.5 hours':
+            return 330
+        case '6 hours':
+            return 360
+        case _:
+            raise ValueError("Unrecognised time value!")
+
 # Returns a list of days for a meeting selected by the user 
 def handle_checkboxes() -> list:
     days = []
     if checkBoxM.isChecked():
         days.append("M")
-    if checkBoxT.isChecked():
+    if checkBoxT.isChecked():https://www.pythonguis.com/pyqt6-tutorial/
         days.append("T")
     if checkBoxW.isChecked():
         days.append("W")
@@ -131,7 +162,6 @@ def handle_checkboxes() -> list:
         days.append("Th")
     if checkBoxF.isChecked():
         days.append("F")
-    print(days)
     return days
 
 # Function to show the loading animation
@@ -175,19 +205,49 @@ def complete_submission():
     if box == QMessageBox.StandardButton.Ok:
         print("OK!")
     """
-    for idx, day in enumerate(htmp[1:6], start=1):
+    days = handle_checkboxes()
+    for d in days:
+        day = htmp[getDayIndex(d)]
+        idx = getDayIndex(d)
+    # Time bar graphs
+    # for idx, day in enumerate(htmp[1:6], start=1):
         plt.figure(day_name(idx))
         plt.bar(range(len(day.table)), list(day.table.values()), align='center')
         # print(list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(htmp[1].table.keys()))))
         plt.xticks(range(len(day.table)),
-                   list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(day.table.keys()))),
-                   rotation='vertical')
+                list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(day.table.keys()))),
+                rotation='vertical')
         plt.title("Class Times: {day}".format(day=day_name(idx)))
         plt.xlabel("Times")
         plt.ylabel("Number of Classes")
         ax = plt.gca() # get current axes
         ax.set_ylim([0, 6])
         plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
+    
+    # Find best times
+    # days = handle_checkboxes()
+    meetingLength = get_time_as_int(get_time_period())
+    bestTimes = getClasses(tmtbl, bestTimesInWeek(tmtbl, meetingLength))
+    timeString = ""
+    for time, courses in bestTimes.items():
+        timeString += time[2] + " from " + time[0] + " to " + time[1] + "\n"
+        timeString += "Courses during this time: "
+        for c in courses:
+            timeString += "\t" + c + "\n"
+
+        timeString += "\n \n"
+
+          
+    bestTimes = QWidget()
+    testLayout = QVBoxLayout()
+    
+    bestTimes.setWindowTitle("Recommended times for your meeting:")
+    widget=QLabel(timeString)
+    testLayout.addWidget(widget)
+    bestTimes.setLayout(testLayout)
+    bestTimes.show()
+    #layout.addWidget(bestTime)
+    #bestTime.setVisible(True)
 
     plt.show()
     # display heatmap as bar plot
@@ -204,5 +264,6 @@ checkBoxF.stateChanged.connect(handle_checkboxes)
 submitButton.clicked.connect(submit_clicked)
 quitButton.clicked.connect(app.quit)
 
-mainPage.showFullScreen()
+# mainPage.showFullScreen()
+mainPage.show()
 app.exec()
