@@ -36,13 +36,14 @@ def calculateDayScores(day: Day, meetingLength: int, dayName: str) -> dict:
     """
     dayScores = {}
     for timeblock in day.table.keys(): #we start at each 30 minute timeblock in a day
-        score = 0
+      
         start = int(timeblock[0])
+
         if(addTime(start, meetingLength)) < 2100: #check if the time is early enough to have a full meeting before the day is over (9pm)
             meetingStart = start
             prevClassScore = 0
             classScore=0
-            for i in range (1, int(meetingLength / 30), 1): #count the number of 30 min blocks the meeting takes, and check that number of blocks after the supposed start
+            for i in range (0, int(meetingLength / 30), 1): #count the number of 30 min blocks the meeting takes, and check that number of blocks after the supposed start
                 #print("i is ",i)
                 #sum number of classes in the meeting block
                 #print('start',str(meetingStart).zfill(4))
@@ -58,31 +59,37 @@ def calculateDayScores(day: Day, meetingLength: int, dayName: str) -> dict:
                 
                     
         dayScores[(str(start).zfill(4), str(addTime(start, meetingLength)).zfill(4), dayName)] = classScore
-
-    keys = dayScores.keys()
+    #print(dayScores)
+    keys = list(dayScores.keys())
 
     prevClassScore = 0
 
     for i in range(len(keys)):     
         currClassScore = dayScores[keys[i]]
 
-        if currClassScore > 6:
-            dayScores[keys[1]] = (100 - currClassScore)
+        if i < len(keys) -1:   
+            nextClassScore = dayScores[keys[i+1]]
         else:
-            if i < len(keys) -1:   
-                nextClassScore = dayScores[[i+1]]
-            else:
-                nextClassScore = 0
+            nextClassScore = 0
+        
+        #print(keys[i], "Prev:", prevClassScore, "Curr:", currClassScore, "Next:", nextClassScore)
+
+        if currClassScore < 6:
 
             if prevClassScore > currClassScore:
-                dayScores[keys[i]] += ((prevClassScore - currClassScore) + 2) * (100 - currClassScore)
-
+                dayScores[keys[i]] -= (prevClassScore - currClassScore) / ((meetingLength / 30) * 0.75)
             if nextClassScore > currClassScore:
-                dayScores[keys[i]] += ((nextClassScore - currClassScore) + 1) * (100 - currClassScore)
-
+                dayScores[keys[i]] -= (nextClassScore - currClassScore) / (meetingLength / 30)
+        # if time is further from the middle of the day, negate
+        if int(keys[i][0]) <= 800 or int(keys[i][0]) >= 1700:
+            dayScores[keys[i]] += 3
+        elif int(keys[i][0]) <= 1000 or int(keys[i][0]) >= 1530:
+            dayScores[keys[i]] += 1
         prevClassScore = currClassScore
 
-    # if time is further from the middle of the day, negate
+    
+
+    
 
     return dayScores      
             
@@ -110,15 +117,17 @@ def bestTimesInWeek(week: list[Day], meetingLength: int):
     """
     allTimes = {}
     
-    for day in week:
-        allTimes = allTimes | calculateDayScores(day, meetingLength, getDayFromIndex(week.index(day)))
+    for i in range(1, 6): # Exclude Saturday and Sunday
+        allTimes = allTimes | calculateDayScores(week[i], meetingLength, getDayFromIndex(i))
 
-    sorted_by_values_desc = sorted(allTimes.items(), key = lambda item: item[1], reverse = True)
+    sorted_by_values_asc = sorted(allTimes.items(), key = lambda item: item[1], reverse = False)
 
     topScores = []
     for i in range(5):
-        topScores.append(sorted_by_values_desc[i][0])
+        topScores.append(sorted_by_values_asc[i][0])
 
+
+    print(sorted_by_values_asc)
     return topScores
 
     
@@ -128,5 +137,5 @@ if __name__ == '__main__':
     h = get_timetable(soup)
     #print(h)
 
-    bestTimesInWeek(h, 90)
+    print(bestTimesInWeek(h, 90))
     #print(bestTimesInWeek(h, 90))
