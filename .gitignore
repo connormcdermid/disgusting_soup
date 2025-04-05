@@ -1,5 +1,6 @@
 *.idea
 venv
+venv2
 venv/*
 venv/**/*
 .idea
@@ -8,5 +9,9 @@ __pycache__
 __pycache__/*
 __pycache__/**/*
 documentation.pdf
+
 venv2
+
+
+liamTest.py
 
