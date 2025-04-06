@@ -51,7 +51,7 @@ def get_heatmap(dsoup: BS) -> list[Day]:
     :return: Heatmap data as list[Day]
     """
     tmtbl = get_timetable(dsoup)
-    htmp = scheduleHeatmap(tmtbl);
+    htmp = scheduleHeatmap(tmtbl)
     return htmp
 
 def get_courses(dsoup: BS) -> list[Course]:
