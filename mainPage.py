@@ -154,7 +154,7 @@ def handle_checkboxes() -> list:
     days = []
     if checkBoxM.isChecked():
         days.append("M")
-    if checkBoxT.isChecked():https://www.pythonguis.com/pyqt6-tutorial/
+    if checkBoxT.isChecked():
         days.append("T")
     if checkBoxW.isChecked():
         days.append("W")
