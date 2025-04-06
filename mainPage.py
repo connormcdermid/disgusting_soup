@@ -118,7 +118,37 @@ def get_time_period() -> str:
     print(time)
     return time
 
-# Returns a list of days for a meeting selected by the user 
+def get_time_as_int(time) -> int:
+    #"30 minutes", "1 hour", "1.5 hours", "2 hours", "2.5 hours", "3 hours", "3.5 hours", "4 hours", "4.5 hours", "5 hours", "5.5 hours", "6 hours"
+    match time:
+        case '30 minutes':
+            return 30
+        case '1 hour':
+            return 60
+        case '1.5 hours':
+            return 90
+        case '2 hours':
+            return 120
+        case '2.5 hours':
+            return 150
+        case '3 hours':
+            return 180
+        case '3.5 hours':
+            return 210
+        case '4 hours':
+            return 240
+        case '4.5 hours':
+            return 270
+        case '5 hours':
+            return 300
+        case '5.5 hours':
+            return 330
+        case '6 hours':
+            return 360
+        case _:
+            raise ValueError("Unrecognised time value!")
+
+# Returns a list of days for a meeting selected by the user
 def handle_checkboxes() -> list:
     days = [False, False, False, False, False, False, False] # padded with extra falses
     # because our days in the timetable have sat and sun
@@ -232,5 +262,6 @@ checkBoxF.stateChanged.connect(handle_checkboxes)
 submitButton.clicked.connect(submit_clicked)
 quitButton.clicked.connect(app.quit)
 
-mainPage.showFullScreen()
+# mainPage.showFullScreen()
+mainPage.show()
 app.exec()
