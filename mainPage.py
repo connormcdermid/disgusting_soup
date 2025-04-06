@@ -120,17 +120,19 @@ def get_time_period() -> str:
 
 # Returns a list of days for a meeting selected by the user 
 def handle_checkboxes() -> list:
-    days = []
+    days = [False, False, False, False, False, False, False] # padded with extra falses
+    # because our days in the timetable have sat and sun
+    # and in order to make it work with the enumeration there the indices have to match
     if checkBoxM.isChecked():
-        days.append("M")
+        days[1] = True
     if checkBoxT.isChecked():
-        days.append("T")
+        days[2] = True
     if checkBoxW.isChecked():
-        days.append("W")
+        days[3] = True
     if checkBoxTh.isChecked():
-        days.append("Th")
+        days[4] = True
     if checkBoxF.isChecked():
-        days.append("F")
+        days[5] = True
     print(days)
     return days
 
@@ -151,6 +153,28 @@ def submit_clicked():
     show_loading_animation()
     QTimer.singleShot(3000, complete_submission) # I assume magic number here is milliseconds
 
+def translate_days(days: list[str]) -> int:
+    res = 0
+    for day in days:
+        match day:
+            case 'M':
+                res += 0b10000
+            case 'T':
+                res += 0b01000
+            case 'W':
+                res += 0b00100
+            case 'R':
+                res += 0b00010
+            case 'F':
+                res += 0b00001
+    return res
+
+def bits(n: int):
+    while n:
+        b = n & (~n + 1)
+        yield b
+        n ^= b
+
 def complete_submission():
     hide_loading_animation()
     plt.close('all') # close all existing matplotlib windows
@@ -159,11 +183,14 @@ def complete_submission():
     termCode = get_term_code()
     subjectName = get_subject_name()
     timePeriod = get_time_period()
+    days_selected = handle_checkboxes()
+    if not days_selected:
+        days_selected = ['M', 'T', 'W', 'R', 'F']
     res = linkage(courseCode, termCode) # res[0] is timetable, res[1] is heatmap
     tmtbl = res[0]
     htmp = res[1]
     # display timetable
-    """ commented out for debug purposes
+    """# commented out for debug purposes
     dlg = QMessageBox()
     dlg.setWindowTitle("Response")
     txt = ""
@@ -176,18 +203,19 @@ def complete_submission():
         print("OK!")
     """
     for idx, day in enumerate(htmp[1:6], start=1):
-        plt.figure(day_name(idx))
-        plt.bar(range(len(day.table)), list(day.table.values()), align='center')
-        # print(list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(htmp[1].table.keys()))))
-        plt.xticks(range(len(day.table)),
-                   list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(day.table.keys()))),
-                   rotation='vertical')
-        plt.title("Class Times: {day}".format(day=day_name(idx)))
-        plt.xlabel("Times")
-        plt.ylabel("Number of Classes")
-        ax = plt.gca() # get current axes
-        ax.set_ylim([0, 6])
-        plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
+        if days_selected[idx]: # would be so, so much nicer as a guard clause, but we can't use continue
+            plt.figure(day_name(idx))
+            plt.bar(range(len(day.table)), list(day.table.values()), align='center')
+            # print(list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(htmp[1].table.keys()))))
+            plt.xticks(range(len(day.table)),
+                       list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(day.table.keys()))),
+                       rotation='vertical')
+            plt.title("Class Times: {day}".format(day=day_name(idx)))
+            plt.xlabel("Times")
+            plt.ylabel("Number of Classes")
+            ax = plt.gca() # get current axes
+            ax.set_ylim([0, 6])
+            plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
 
     plt.show()
     # display heatmap as bar plot
