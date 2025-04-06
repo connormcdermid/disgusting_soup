@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QComboBox, QVBoxLayout, QPushButton, QMessageBox, QCheckBox, QHBoxLayout, QSpacerItem, QSizePolicy
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QLabel, QWidget, QComboBox, QVBoxLayout, QPushButton, QMessageBox, QCheckBox, QHBoxLayout, QSpacerItem, QSizePolicy
 from PyQt6.QtCore import Qt, QUrl, QTimer
 from PyQt6.QtMultimedia import QMediaPlayer
 from PyQt6.QtMultimediaWidgets import QVideoWidget
@@ -6,6 +7,9 @@ from main import linkage
 from timetable import getDayFromIndex as day_name
 from matplotlib import pyplot as plt
 import numpy as np
+from welcomeScreen import WelcomeScreen
+
+app = QApplication([])  
 
 subject_codes = {
     "Accounting": "ACCT", "Anthropology": "ANTH", "Art Studies (General)": "ARTS", "Asian Studies": "ASIA",
@@ -31,7 +35,6 @@ subject_codes = {
 term_codes = {"Fall 2024" : "F2024", "Spring 2025" : "S2025", "Fall 2025" : "F2025", "Spring 2026" : "S2026"}
 time_periods = ("30 minutes", "1 hour", "1.5 hours", "2 hours", "2.5 hours", "3 hours", "3.5 hours", "4 hours", "4.5 hours", "5 hours", "5.5 hours", "6 hours")
 
-app = QApplication([])
 mainPage = QWidget()
 mainPage.setWindowTitle("Disgusting Soup")
 
@@ -46,22 +49,33 @@ comboBoxTime = QComboBox()
 comboBoxTime.addItems(time_periods)
 
 subjectLabel = QLabel("Please, select the subject area")
+subjectLabel.setStyleSheet("font-size: 15px; font-weight: bold; color: #333;")
 subjectLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
 termLabel = QLabel("Please, select the term")
-termLabel.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+termLabel.setStyleSheet("font-size: 15px; font-weight: bold; color: #333;")
+termLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
 timeLabel = QLabel("Please, select the time period and days of the week you are available")
-timeLabel.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+timeLabel.setStyleSheet("font-size: 15px; font-weight: bold; color: #333;")
+timeLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
 submitButton = QPushButton("Submit")
+submitButton.setStyleSheet("background-color: #4CAF50; color: white; font-size: 15px; font-weight: bold; padding: 10px; border-radius: 5px;")
+
 quitButton = QPushButton("Quit")
+quitButton.setStyleSheet("background-color: #f44336; color: white; font-size: 15px; font-weight: bold; padding: 10px; border-radius: 5px;")
 
 checkBoxM = QCheckBox("Monday")
+checkBoxM.setChecked(True)  # Default checked
 checkBoxT = QCheckBox("Tuesday")
+checkBoxT.setChecked(True)  # Default checked
 checkBoxW = QCheckBox("Wednesday")
+checkBoxW.setChecked(True)  # Default checked
 checkBoxTh = QCheckBox("Thursday")
+checkBoxTh.setChecked(True)  # Default checked
 checkBoxF = QCheckBox("Friday")
+checkBoxF.setChecked(True)  # Default checked
 
 # QVideoWidget for the loading animation
 videoWidget = QVideoWidget()
@@ -204,5 +218,13 @@ checkBoxF.stateChanged.connect(handle_checkboxes)
 submitButton.clicked.connect(submit_clicked)
 quitButton.clicked.connect(app.quit)
 
-mainPage.showFullScreen()
+# Function to show the main page
+def show_main_page():
+    mainPage.showFullScreen()
+
+# Show the welcome screen
+welcomeScreen = WelcomeScreen(on_finished_callback=show_main_page)
+welcomeScreen.show()
+
+# Start the application event loop
 app.exec()
