@@ -24,7 +24,7 @@ subject_codes = {
     "Information Tech & Applied Systems": "ITAS", "Interdisciplinary Studies": "INTR", "Interior Design": "ARTI",
     "Internship": "INTP", "Japanese": "JAPA", "Kinesiology": "KIN", "Law": "LAWW", "Liberal Studies": "LBST",
     "Linguistics": "LING", "Management": "MGMT", "Marketing": "MRKT", "Mathematics": "MATH", "Media Studies": "MEDI",
-    "Music": "MUSC", "Nursing – Generic Baccalaureate": "NURS", "Philosophy": "PHIL", "Physical Education – se Kinesiology": "PHED",
+    "Music": "MUSC", "Nursing – Generic Baccalaureate": "NURS", "Philosophy": "PHIL", "Physical Education": "PHED",
     "Physics": "PHYS", "Political Studies": "POLI", "Practical Nursing": "PRNU", "Prior Learning Assessment": "PLA",
     "Professional Indigenous Land Management": "PILM", "Psychology": "PSYC", "Quantitative Methods": "QUME",
     "Recreation & Sport Management": "RMGT", "Religious Studies": "RELI", "Resource Management Officer": "RMOT",
@@ -88,6 +88,7 @@ mediaPlayer.setVideoOutput(videoWidget)
 
 # Responsive layout
 layout = QVBoxLayout()
+bestWindow = QMessageBox()
 layout.addWidget(subjectLabel)
 layout.addWidget(comboBoxSubject)
 layout.addWidget(termLabel)
@@ -100,6 +101,7 @@ layout.addWidget(checkBoxW)
 layout.addWidget(checkBoxTh)
 layout.addWidget(checkBoxF)
 layout.addWidget(submitButton)
+layout.addWidget(bestWindow)
 layout.addWidget(quitButton)
 #layout.addWidget(videoWidget) #If you uncoment it, animation will be in a top left corner
 
@@ -219,6 +221,9 @@ def bits(n: int):
         yield b
         n ^= b
 
+def strbuild(l: list[tuple]) -> str:
+    
+
 def complete_submission():
     hide_loading_animation()
     plt.close('all') # close all existing matplotlib windows
@@ -260,9 +265,9 @@ def complete_submission():
             plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
     # get best times
     times = best_times(tmtbl, get_time_as_int(timePeriod))
-    bestWindow = QMessageBox()
     bestWindow.text()
-    bestWindow.show()
+
+
 
     plt.show()
     # display heatmap as bar plot

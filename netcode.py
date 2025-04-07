@@ -87,7 +87,7 @@ def get_course_code(dept: str) -> str:
         case "Music" | "MUSC": return "002B"
         case "Nursing - Generic Baccalaureate" | "NURS": return "002C"
         case "Philosophy" | "PHIL": return "002D"
-        case "Physical Education - se Kinesiology" | "PHED": return "002E" # No courses offered this term
+        case "Physical Education" | "PHED": return "002E" # No courses offered this term
         case "Physics" | "PHYS": return "002F"
         case "Political Studies" | "POLI": return "002G"
         case "Practical Nursing" | "PRNU": return "002I"
