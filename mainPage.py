@@ -8,7 +8,7 @@ from timetable import getDayFromIndex as day_name
 from matplotlib import pyplot as plt
 import numpy as np
 from welcomeScreen import WelcomeScreen
-from algorithm import bestTimesInWeek as best_times
+from algorithm import bestTimesInWeek as best_times, getClasses
 
 subject_codes = {
     "Accounting": "ACCT", "Anthropology": "ANTH", "Art Studies (General)": "ARTS", "Asian Studies": "ASIA",
@@ -245,6 +245,8 @@ def complete_submission():
     if box == QMessageBox.StandardButton.Ok:
         print("OK!")
     """
+
+    bestTmtbl = []
     for idx, day in enumerate(htmp[1:6], start=1):
         if days_selected[idx]: # would be so, so much nicer as a guard clause, but we can't use continue
             plt.figure(day_name(idx))
@@ -260,10 +262,16 @@ def complete_submission():
             ax.set_ylim([0, 6])
             plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
     # get best times
-    times = best_times(tmtbl, get_time_as_int(timePeriod))
+    bestTimes = getClasses(tmtbl, best_times(tmtbl, get_time_as_int(timePeriod)))
+    timeString = ""
+    for time, courses in bestTimes.items():
+        timeString += "On " + time[2] + " from " + time[0] + " to " + time[1] + "\n"
+        timeString += "Courses during this time: "
+        for c in courses:
+            timeString += "\n\t - " + c
 
-    timeString = strbuild(times)
-          
+        timeString += "\n \n"
+     
     bestTimes = QTextBrowser()
     testLayout = QVBoxLayout()
     

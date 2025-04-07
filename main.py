@@ -16,3 +16,4 @@ def linkage(dept: str, session: str) -> tuple[list[Day], list[Day]]:
 
 if __name__ == "__main__":
     print(i for i in linkage(sys.argv[1], sys.argv[2]))
+    print(sys.path)
