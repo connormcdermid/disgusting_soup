@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtWidgets import QLabel, QWidget, QComboBox, QVBoxLayout, QPushButton, QMessageBox, QCheckBox, QHBoxLayout, QSpacerItem, QSizePolicy
+from PyQt6.QtWidgets import QLabel, QWidget, QComboBox, QVBoxLayout, QPushButton, QMessageBox, QCheckBox, QHBoxLayout, QSpacerItem, QSizePolicy, QTextBrowser
 from PyQt6.QtCore import Qt, QUrl, QTimer
 from PyQt6.QtMultimedia import QMediaPlayer
 from PyQt6.QtMultimediaWidgets import QVideoWidget
@@ -9,7 +9,6 @@ from matplotlib import pyplot as plt
 import numpy as np
 from welcomeScreen import WelcomeScreen
 from algorithm import bestTimesInWeek as best_times
-app = QApplication([])
 
 subject_codes = {
     "Accounting": "ACCT", "Anthropology": "ANTH", "Art Studies (General)": "ARTS", "Asian Studies": "ASIA",
@@ -24,7 +23,7 @@ subject_codes = {
     "Information Tech & Applied Systems": "ITAS", "Interdisciplinary Studies": "INTR", "Interior Design": "ARTI",
     "Internship": "INTP", "Japanese": "JAPA", "Kinesiology": "KIN", "Law": "LAWW", "Liberal Studies": "LBST",
     "Linguistics": "LING", "Management": "MGMT", "Marketing": "MRKT", "Mathematics": "MATH", "Media Studies": "MEDI",
-    "Music": "MUSC", "Nursing – Generic Baccalaureate": "NURS", "Philosophy": "PHIL", "Physical Education": "PHED",
+    "Music": "MUSC", "Nursing – Generic Baccalaureate": "NURS", "Philosophy": "PHIL", "Physical Education – se Kinesiology": "PHED",
     "Physics": "PHYS", "Political Studies": "POLI", "Practical Nursing": "PRNU", "Prior Learning Assessment": "PLA",
     "Professional Indigenous Land Management": "PILM", "Psychology": "PSYC", "Quantitative Methods": "QUME",
     "Recreation & Sport Management": "RMGT", "Religious Studies": "RELI", "Resource Management Officer": "RMOT",
@@ -35,6 +34,7 @@ subject_codes = {
 term_codes = {"Fall 2024" : "F2024", "Spring 2025" : "S2025", "Fall 2025" : "F2025", "Spring 2026" : "S2026"}
 time_periods = ("30 minutes", "1 hour", "1.5 hours", "2 hours", "2.5 hours", "3 hours", "3.5 hours", "4 hours", "4.5 hours", "5 hours", "5.5 hours", "6 hours")
 
+app = QApplication([])
 mainPage = QWidget()
 mainPage.setWindowTitle("Disgusting Soup")
 
@@ -49,33 +49,22 @@ comboBoxTime = QComboBox()
 comboBoxTime.addItems(time_periods)
 
 subjectLabel = QLabel("Please, select the subject area")
-subjectLabel.setStyleSheet("font-size: 15px; font-weight: bold; color: #333;")
 subjectLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
 termLabel = QLabel("Please, select the term")
-termLabel.setStyleSheet("font-size: 15px; font-weight: bold; color: #333;")
-termLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+termLabel.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
 timeLabel = QLabel("Please, select the time period and days of the week you are available")
-timeLabel.setStyleSheet("font-size: 15px; font-weight: bold; color: #333;")
-timeLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+timeLabel.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
 submitButton = QPushButton("Submit")
-submitButton.setStyleSheet("background-color: #4CAF50; color: white; font-size: 15px; font-weight: bold; padding: 10px; border-radius: 5px;")
-
 quitButton = QPushButton("Quit")
-quitButton.setStyleSheet("background-color: #f44336; color: white; font-size: 15px; font-weight: bold; padding: 10px; border-radius: 5px;")
 
 checkBoxM = QCheckBox("Monday")
-checkBoxM.setChecked(True)  # Default checked
 checkBoxT = QCheckBox("Tuesday")
-checkBoxT.setChecked(True)  # Default checked
 checkBoxW = QCheckBox("Wednesday")
-checkBoxW.setChecked(True)  # Default checked
 checkBoxTh = QCheckBox("Thursday")
-checkBoxTh.setChecked(True)  # Default checked
 checkBoxF = QCheckBox("Friday")
-checkBoxF.setChecked(True)  # Default checked
 
 # QVideoWidget for the loading animation
 videoWidget = QVideoWidget()
@@ -222,7 +211,14 @@ def bits(n: int):
         n ^= b
 
 def strbuild(l: list[tuple]) -> str:
-    
+    final: str = ""
+    for item in l:
+        final += "From {t1} to {t2} on {day}\n".format(
+            t1=item[0],
+            t2=item[1],
+            day=item[2]
+        )
+    return final
 
 def complete_submission():
     hide_loading_animation()
@@ -265,9 +261,19 @@ def complete_submission():
             plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
     # get best times
     times = best_times(tmtbl, get_time_as_int(timePeriod))
-    bestWindow.text()
 
-
+    timeString = strbuild(times)
+          
+    bestTimes = QTextBrowser()
+    testLayout = QVBoxLayout()
+    
+    bestTimes.setWindowTitle("Recommended times for your meeting:")
+    widget=QLabel(timeString)
+    testLayout.addWidget(widget)
+    bestTimes.setLayout(testLayout)
+    bestTimes.show()
+    layout.addWidget(bestTimes)
+    bestTimes.setVisible(True)
 
     plt.show()
     # display heatmap as bar plot
@@ -286,7 +292,9 @@ quitButton.clicked.connect(app.quit)
 
 # Function to show the main page
 def show_main_page():
+    mainPage.setFixedSize(800, 800)
     mainPage.show()
+
 
 # Show the welcome screen
 welcomeScreen = WelcomeScreen(on_finished_callback=show_main_page)
