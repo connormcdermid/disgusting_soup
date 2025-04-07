@@ -81,7 +81,7 @@ def calculateDayScores(day: Day, meetingLength: int, dayName: str) -> dict:
 
     return dayScores      
             
-def bestTimesInWeek(week: list[Day], meetingLength: int) -> list[tuple]:
+def bestTimesInWeek(week: list[Day], meetingLength: int, selectedDays: list[bool]) -> list[tuple]:
     """For every day in the week, compute the  3 best meeting times.
 
     Args:
@@ -91,7 +91,8 @@ def bestTimesInWeek(week: list[Day], meetingLength: int) -> list[tuple]:
     allTimes = {}
     
     for i in range(1, 6): # Exclude Saturday and Sunday
-        allTimes = allTimes | calculateDayScores(week[i], meetingLength, getDayFromIndex(i))
+        if selectedDays[i]:
+            allTimes = allTimes | calculateDayScores(week[i], meetingLength, getDayFromIndex(i))
 
     sorted_by_values_asc = sorted(allTimes.items(), key = lambda item: item[1], reverse = False)
 

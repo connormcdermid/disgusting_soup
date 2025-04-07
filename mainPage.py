@@ -267,7 +267,7 @@ def complete_submission():
             ax.set_ylim([0, 6])
             plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
     # get best times
-    bestTimes = getClasses(tmtbl, best_times(tmtbl, get_time_as_int(timePeriod)))
+    bestTimes = getClasses(tmtbl, best_times(tmtbl, get_time_as_int(timePeriod), days_selected))
     timeString = ""
     for time, courses in bestTimes.items():
         timeString += "On " + time[2] + " from " + time[0] + " to " + time[1] + "\n"
