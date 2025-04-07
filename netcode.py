@@ -93,7 +93,7 @@ def get_course_code(dept: str) -> str:
         case "Practical Nursing" | "PRNU": return "002I"
         case "Prior Learning Assessment" | "PLA": return "002J" # No courses offered this term
         case "Professional Indigenous Land Management" | "PILM": return "000T"
-        case "Psychology" "PSYC": return "002L"
+        case "Psychology" | "PSYC": return "002L"
         case "Quantitative Methods" | "QUME": return "002N"
         case "Recreation & Sport Management" | "RMGT": return "002O"
         case "Religious Studies" | "RELI": return "002P"
