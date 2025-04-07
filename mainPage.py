@@ -61,10 +61,15 @@ submitButton = QPushButton("Submit")
 quitButton = QPushButton("Quit")
 
 checkBoxM = QCheckBox("Monday")
+checkBoxM.setChecked(True)
 checkBoxT = QCheckBox("Tuesday")
+checkBoxT.setChecked(True)
 checkBoxW = QCheckBox("Wednesday")
+checkBoxW.setChecked(True)
 checkBoxTh = QCheckBox("Thursday")
+checkBoxTh.setChecked(True)
 checkBoxF = QCheckBox("Friday")
+checkBoxF.setChecked(True)
 
 # QVideoWidget for the loading animation
 videoWidget = QVideoWidget()
@@ -90,7 +95,7 @@ layout.addWidget(checkBoxW)
 layout.addWidget(checkBoxTh)
 layout.addWidget(checkBoxF)
 layout.addWidget(submitButton)
-layout.addWidget(bestWindow)
+# layout.addWidget(bestWindow) adds random-ass OK button
 layout.addWidget(quitButton)
 #layout.addWidget(videoWidget) #If you uncoment it, animation will be in a top left corner
 
