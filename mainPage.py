@@ -223,7 +223,7 @@ def complete_submission():
     tmtbl = res[0]
     htmp = res[1]
 
-    # Display timetable (existing logic)
+    # Display timetable 
     for idx, day in enumerate(htmp[1:6], start=1):
         if days_selected[idx]:
             plt.figure(day_name(idx))
