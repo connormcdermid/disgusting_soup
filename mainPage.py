@@ -95,9 +95,7 @@ layout.addWidget(checkBoxW)
 layout.addWidget(checkBoxTh)
 layout.addWidget(checkBoxF)
 layout.addWidget(submitButton)
-# layout.addWidget(bestWindow) adds random-ass OK button
 layout.addWidget(quitButton)
-#layout.addWidget(videoWidget) #If you uncoment it, animation will be in a top left corner
 
 layout.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Align the whole layout center
 mainPage.setLayout(layout)
@@ -129,7 +127,6 @@ def get_time_period() -> str:
     return time
 
 def get_time_as_int(time) -> int:
-    #"30 minutes", "1 hour", "1.5 hours", "2 hours", "2.5 hours", "3 hours", "3.5 hours", "4 hours", "4.5 hours", "5 hours", "5.5 hours", "6 hours"
     match time:
         case '30 minutes':
             return 30
@@ -210,11 +207,10 @@ def strbuild(l: list[tuple]) -> str:
         )
     return final
 
-# Add a global variable to keep track of the current bestTimes widget
 currentBestTimesWidget = None
 
 def complete_submission():
-    global currentBestTimesWidget  # Reference the global variable
+    global currentBestTimesWidget
     hide_loading_animation()
     plt.close('all')  # Close all existing matplotlib windows
 
@@ -261,7 +257,6 @@ def complete_submission():
             currentBestTimesWidget.deleteLater()
             currentBestTimesWidget = None
 
-        # Create a new QTextBrowser for the latest best times
         currentBestTimesWidget = QTextBrowser()
         testLayout = QVBoxLayout()
 
@@ -293,5 +288,4 @@ welcomeScreen = WelcomeScreen(on_finished_callback=show_main_page)
 welcomeScreen.show()
 
 # Start the application event loop
-# mainPage.show()
 app.exec()
