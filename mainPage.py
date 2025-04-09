@@ -270,6 +270,7 @@ def complete_submission():
     # get best times
     
     #only try to check best times if there is days selected
+    timeString = ""
     if True in handle_checkboxes():
         
         bestTimes = getClasses(tmtbl, best_times(tmtbl, get_time_as_int(timePeriod), days_selected))
