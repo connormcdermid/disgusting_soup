@@ -32,7 +32,7 @@ subject_codes = {
 }
 
 term_codes = {"Fall 2024" : "F2024", "Spring 2025" : "S2025", "Fall 2025" : "F2025", "Spring 2026" : "S2026"}
-time_periods = ("30 minutes", "1 hour", "1.5 hours", "2 hours", "2.5 hours", "3 hours", "3.5 hours", "4 hours", "4.5 hours", "5 hours", "5.5 hours", "6 hours")
+time_periods = ("30 minutes", "1 hour", "1.5 hours", "2 hours")
 
 app = QApplication([])
 mainPage = QWidget()
@@ -139,22 +139,6 @@ def get_time_as_int(time) -> int:
             return 90
         case '2 hours':
             return 120
-        case '2.5 hours':
-            return 150
-        case '3 hours':
-            return 180
-        case '3.5 hours':
-            return 210
-        case '4 hours':
-            return 240
-        case '4.5 hours':
-            return 270
-        case '5 hours':
-            return 300
-        case '5.5 hours':
-            return 330
-        case '6 hours':
-            return 360
         case _:
             raise ValueError("Unrecognised time value!")
 
@@ -270,7 +254,7 @@ def complete_submission():
     # get best times
     
     #only try to check best times if there is days selected
-    timeString = ""
+    timeString = "Recommended times for your meeting:\n\n"
     if True in handle_checkboxes():
         
         bestTimes = getClasses(tmtbl, best_times(tmtbl, get_time_as_int(timePeriod), days_selected))
