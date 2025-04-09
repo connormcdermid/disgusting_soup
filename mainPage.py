@@ -160,9 +160,10 @@ def get_time_as_int(time) -> int:
 
 # Returns a list of days for a meeting selected by the user
 def handle_checkboxes() -> list:
-    days = [True, True, True, True, True, True, True] # padded with extra Trues
+    days = [False, True, True, True, True, True, False] # padded with extra Trues
     # because our days in the timetable have sat and sun
     # and in order to make it work with the enumeration there the indices have to match
+    
     if not checkBoxM.isChecked():
         days[1] = False
     if not checkBoxT.isChecked():
@@ -251,7 +252,7 @@ def complete_submission():
         print("OK!")
     """
 
-    bestTmtbl = []
+    #bestTmtbl = []
     for idx, day in enumerate(htmp[1:6], start=1):
         if days_selected[idx]: # would be so, so much nicer as a guard clause, but we can't use continue
             plt.figure(day_name(idx))
@@ -267,26 +268,30 @@ def complete_submission():
             ax.set_ylim([0, 6])
             plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
     # get best times
-    bestTimes = getClasses(tmtbl, best_times(tmtbl, get_time_as_int(timePeriod), days_selected))
-    timeString = ""
-    for time, courses in bestTimes.items():
-        timeString += "On " + time[2] + " from " + time[0] + " to " + time[1] + "\n"
-        timeString += "Courses during this time: "
-        for c in courses:
-            timeString += "\n\t - " + c
-
-        timeString += "\n \n"
-     
-    bestTimes = QTextBrowser()
-    testLayout = QVBoxLayout()
     
-    bestTimes.setWindowTitle("Recommended times for your meeting:")
-    widget=QLabel(timeString)
-    testLayout.addWidget(widget)
-    bestTimes.setLayout(testLayout)
-    bestTimes.show()
-    layout.addWidget(bestTimes)
-    bestTimes.setVisible(True)
+    #only try to check best times if there is days selected
+    if True in handle_checkboxes():
+        
+        bestTimes = getClasses(tmtbl, best_times(tmtbl, get_time_as_int(timePeriod), days_selected))
+        
+        for time, courses in bestTimes.items():
+            timeString += "On " + time[2] + " from " + time[0] + " to " + time[1] + "\n"
+            timeString += "Courses during this time: "
+            for c in courses:
+                timeString += "\n\t - " + c
+
+            timeString += "\n \n"
+     
+        bestTimes = QTextBrowser()
+        testLayout = QVBoxLayout()
+        
+        bestTimes.setWindowTitle("Recommended times for your meeting:")
+        widget=QLabel(timeString)
+        testLayout.addWidget(widget)
+        bestTimes.setLayout(testLayout)
+        bestTimes.show()
+        layout.addWidget(bestTimes)
+        bestTimes.setVisible(True)
 
     plt.show()
     # display heatmap as bar plot
