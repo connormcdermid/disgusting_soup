@@ -210,55 +210,43 @@ def strbuild(l: list[tuple]) -> str:
         )
     return final
 
+# Add a global variable to keep track of the current bestTimes widget
+currentBestTimesWidget = None
+
 def complete_submission():
+    global currentBestTimesWidget  # Reference the global variable
     hide_loading_animation()
-    plt.close('all') # close all existing matplotlib windows
+    plt.close('all')  # Close all existing matplotlib windows
 
     courseCode = get_course_code()
     termCode = get_term_code()
     subjectName = get_subject_name()
     timePeriod = get_time_period()
     days_selected = handle_checkboxes()
-    res = linkage(courseCode, termCode) # res[0] is timetable, res[1] is heatmap
+    res = linkage(courseCode, termCode)  # res[0] is timetable, res[1] is heatmap
     tmtbl = res[0]
     htmp = res[1]
-    # display timetable
-    """# commented out for debug purposes
-    dlg = QMessageBox()
-    dlg.setWindowTitle("Response")
-    txt = ""
-    for idx, day in enumerate(tmtbl):
-        txt += "{day}: \n {contents}".format(day=day_name(idx),
-                                             contents=day.__str__())
-    dlg.setText(txt)
-    box = dlg.exec()
-    if box == QMessageBox.StandardButton.Ok:
-        print("OK!")
-    """
 
-    #bestTmtbl = []
+    # Display timetable (existing logic)
     for idx, day in enumerate(htmp[1:6], start=1):
-        if days_selected[idx]: # would be so, so much nicer as a guard clause, but we can't use continue
+        if days_selected[idx]:
             plt.figure(day_name(idx))
             plt.bar(range(len(day.table)), list(day.table.values()), align='center')
-            # print(list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(htmp[1].table.keys()))))
             plt.xticks(range(len(day.table)),
                        list(map(lambda x: "{s} to {t}".format(s=x[0], t=x[1]), list(day.table.keys()))),
                        rotation='vertical')
             plt.title("Class Times: {day}".format(day=day_name(idx)))
             plt.xlabel("Times")
             plt.ylabel("Number of Classes")
-            ax = plt.gca() # get current axes
+            ax = plt.gca()  # Get current axes
             ax.set_ylim([0, 6])
-            plt.subplots_adjust(bottom=0.3)  # make space at bottom of graph for labels
-    # get best times
-    
-    #only try to check best times if there is days selected
+            plt.subplots_adjust(bottom=0.3)  # Make space at bottom of graph for labels
+
+    # Only try to check best times if there are days selected
     timeString = "Recommended times for your meeting:\n\n"
     if True in handle_checkboxes():
-        
         bestTimes = getClasses(tmtbl, best_times(tmtbl, get_time_as_int(timePeriod), days_selected))
-        
+
         for time, courses in bestTimes.items():
             timeString += "On " + time[2] + " from " + time[0] + " to " + time[1] + "\n"
             timeString += "Courses during this time: "
@@ -266,24 +254,25 @@ def complete_submission():
                 timeString += "\n\t - " + c
 
             timeString += "\n \n"
-     
-        bestTimes = QTextBrowser()
+
+        # Remove the previous bestTimes widget if it exists
+        if currentBestTimesWidget is not None:
+            layout.removeWidget(currentBestTimesWidget)
+            currentBestTimesWidget.deleteLater()
+            currentBestTimesWidget = None
+
+        # Create a new QTextBrowser for the latest best times
+        currentBestTimesWidget = QTextBrowser()
         testLayout = QVBoxLayout()
-        
-        bestTimes.setWindowTitle("Recommended times for your meeting:")
-        widget=QLabel(timeString)
+
+        currentBestTimesWidget.setWindowTitle("Recommended times for your meeting:")
+        widget = QLabel(timeString)
         testLayout.addWidget(widget)
-        bestTimes.setLayout(testLayout)
-        bestTimes.show()
-        layout.addWidget(bestTimes)
-        bestTimes.setVisible(True)
+        currentBestTimesWidget.setLayout(testLayout)
+        layout.addWidget(currentBestTimesWidget)
+        currentBestTimesWidget.setVisible(True)
 
     plt.show()
-    # display heatmap as bar plot
-
-
-
-
 
 checkBoxM.stateChanged.connect(handle_checkboxes)
 checkBoxT.stateChanged.connect(handle_checkboxes)
